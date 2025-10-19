@@ -15,6 +15,7 @@ int main() {
 
   while (!WindowShouldClose()) {
     BeginDrawing();
+    ClearBackground(BLACK);
     chip8_cycle();
     EndDrawing();
   }

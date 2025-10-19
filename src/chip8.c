@@ -1,3 +1,7 @@
+// test code
+#include <unistd.h>
+// test code
+
 #include "config.h"
 
 #include "chip8.h"
@@ -26,18 +30,35 @@ static const unsigned char fonts[80] = {
 };
 void chip8_load_fonts() { memcpy(&chip8.memory[0x50], fonts, sizeof(fonts)); }
 
-// this is where i am
-// how to read from memory[I] each bit into display as 1 or 0
-// how
 static uint8_t display[DISPLAY_HEIGHT][DISPLAY_WIDTH];
+static void display_draw(void) {
+  for (int y = 0; y < DISPLAY_HEIGHT; y++) {
+    for (int x = 0; x < DISPLAY_WIDTH; x++) {
+      if (display[y][x])
+        DrawRectangle(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE,
+                      WHITE);
+      else
+        DrawRectangle(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE,
+                      BLACK);
+    }
+  }
+}
 
 void chip8_init() {
+  // test code
+
+  chip8.I = 0x50;
+  chip8.memory[0x200] = 0xD0;
+  chip8.memory[0x201] = 0x05;
+
+  // test code
+
   chip8.PC = 0x200;
   chip8_load_fonts();
 }
 
 static inline uint16_t _OP(uint8_t B0, uint8_t B1) {
-  return ((uint16_t)(B0 & 0x0F) << 8) | (uint16_t)B1;
+  return ((uint16_t)(B0) << 8) | (uint16_t)B1;
 }
 static inline uint8_t _instr(uint16_t OP) { return (uint8_t)(OP >> 12); }
 static inline uint8_t _X(uint16_t OP) { return (uint8_t)(OP >> 8) & 0x0F; }
@@ -95,8 +116,27 @@ void chip8_cycle() {
   case 0xC:
     break;
   case 0xD:
+    chip8.V[0xF] = 0;
+    X &= 63;
+    Y &= 31;
     for (size_t i = 0; i < N; i++) {
+      if (Y + i > 31) {
+        break;
+      }
+
+      for (int ib = 7; ib >= 0; ib--) {
+        if (X + ib > 63) {
+          break;
+        }
+
+        uint8_t lsb = ((chip8.memory[chip8.I + i] >> ib) & 1);
+        if (display[Y + i][X + (7 - ib)] && lsb) {
+          chip8.V[0xF] = 1;
+        }
+        display[Y + i][X + (7 - ib)] ^= lsb;
+      }
     }
+    display_draw();
     break;
   case 0xE:
     break;
