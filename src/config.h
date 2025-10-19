@@ -1,0 +1,10 @@
+#ifndef CONFIG_H
+#define CONFIG_H
+
+#define WINDOW_WIDTH 1024
+#define WINDOW_HEIGHT 512
+#define DISPLAY_WIDTH 64
+#define DISPLAY_HEIGHT 32
+#define BLOCK_SIZE ((WINDOW_HEIGHT) / (DISPLAY_HEIGHT))
+
+#endif
