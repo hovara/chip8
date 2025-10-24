@@ -100,7 +100,9 @@ void chip8_cycle() {
   case 0x1:
     chip8.PC = NNN;
     break;
-  case 0x2:
+  case 0x2: // Call subroutine
+    stack_push(&chip8.stack, chip8.PC);
+    chip8.PC = NNN;
     break;
   case 0x3:
     break;
