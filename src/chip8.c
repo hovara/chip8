@@ -85,19 +85,19 @@ void chip8_cycle() {
   case 0x0:
     if (X == 0x0) {
       switch (NN) {
-      case 0xE0: // clear screen
+      case 0xE0: // Clear screen
         ClearBackground(BLACK);
         break;
 
-      case 0xEE: // return from a subroutine
+      case 0xEE: // Return from a subroutine
         stack_pop(&chip8.stack, &chip8.PC);
         break;
       }
     } else {
-      // OP = 0x0NNN irrelevant
+      // OP = 0x0NNN irrelevant (Execute machine language subroutine)
     }
     break;
-  case 0x1:
+  case 0x1: // Jump
     chip8.PC = NNN;
     break;
   case 0x2: // Call subroutine
@@ -127,7 +127,7 @@ void chip8_cycle() {
     break;
   case 0xC:
     break;
-  case 0xD:
+  case 0xD: // Display
     chip8.V[0xF] = 0;
     // wrong here
     X &= 63;
