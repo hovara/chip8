@@ -83,8 +83,18 @@ void chip8_cycle() {
   // execute
   switch (instr) {
   case 0x0:
-    if (N ^ 0xE) {
-      ClearBackground(BLACK);
+    if (X == 0x0) {
+      switch (NN) {
+      case 0xE0: // clear screen
+        ClearBackground(BLACK);
+        break;
+
+      case 0xEE: // return from a subroutine
+        stack_pop(&chip8.stack, &chip8.PC);
+        break;
+      }
+    } else {
+      // OP = 0x0NNN irrelevant
     }
     break;
   case 0x1:
@@ -117,6 +127,7 @@ void chip8_cycle() {
     break;
   case 0xD:
     chip8.V[0xF] = 0;
+    // wrong here
     X &= 63;
     Y &= 31;
     for (size_t i = 0; i < N; i++) {
