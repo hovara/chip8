@@ -93,9 +93,7 @@ void chip8_cycle() {
         stack_pop(&chip8.stack, &chip8.PC);
         break;
       }
-    } else {
-      // OP = 0x0NNN irrelevant (Execute machine language subroutine)
-    }
+    } // else {} OP = 0x0NNN irrelevant (Execute machine language subroutine)
     break;
   case 0x1: // Jump
     chip8.PC = NNN;
@@ -104,11 +102,17 @@ void chip8_cycle() {
     stack_push(&chip8.stack, chip8.PC);
     chip8.PC = NNN;
     break;
-  case 0x3:
+  case 0x3: // Conditional skip
+    if (chip8.V[X] == NN)
+      chip8.PC += 2;
     break;
-  case 0x4:
+  case 0x4: // Conditional skip
+    if (chip8.V[X] != NN)
+      chip8.PC += 2;
     break;
-  case 0x5:
+  case 0x5: // Conditional skip
+    if (chip8.V[X] == chip8.V[Y])
+      chip8.PC += 2;
     break;
   case 0x6:
     chip8.V[X] = NN;
@@ -118,7 +122,9 @@ void chip8_cycle() {
     break;
   case 0x8:
     break;
-  case 0x9:
+  case 0x9: // Conditional skip
+    if (chip8.V[X] != chip8.V[Y])
+      chip8.PC += 2;
     break;
   case 0xA:
     chip8.I = NNN;
