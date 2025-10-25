@@ -117,7 +117,7 @@ void chip8_cycle() {
   case 0x6: // Set
     chip8.V[X] = NN;
     break;
-  case 0x7:
+  case 0x7: // Add
     chip8.V[X] += NN;
     break;
   case 0x8:
