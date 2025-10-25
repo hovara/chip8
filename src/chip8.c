@@ -251,13 +251,13 @@ void chip8_cycle() {
     display_draw();
     break;
   case 0xE:
-    switch (N) {
-    case 0x9:
+    switch (NN) {
+    case 0x9E:
       if (chip8.V[X] == get_key_pressed()) {
         chip8.PC += 2;
       }
       break;
-    case 0xA:
+    case 0xA1:
       if (chip8.V[X] != get_key_pressed()) {
         chip8.PC += 2;
       }
