@@ -300,6 +300,18 @@ void chip8_cycle() {
     case 0x29:
       chip8.I = 0x50 + (chip8.V[X] & 0x0F) * 5;
       break;
+    case 0x33:
+      if (chip8.V[X] == 0)
+        chip8.memory[chip8.I] = 0;
+      else {
+        uint8_t i = 0;
+        while (chip8.V[X] > 0) {
+          chip8.memory[chip8.I + i] = chip8.V[X] % 10;
+          chip8.V[X] = chip8.V[X] / 10;
+          i++;
+        }
+      }
+      break;
     }
     break;
   default:
