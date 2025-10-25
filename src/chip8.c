@@ -80,7 +80,9 @@ void chip8_init() {
 
   chip8.I = 0x50;
   chip8.memory[0x200] = 0xD0;
-  chip8.memory[0x201] = 0x05;
+  chip8.memory[0x201] = 0x15;
+  chip8.V[0] = 10;
+  chip8.V[1] = 10;
 
   // test code
 
@@ -274,6 +276,13 @@ void chip8_cycle() {
       break;
     case 0x18:
       chip8.sound_timer = chip8.V[X];
+      break;
+    case 0x1E:
+      chip8.I += chip8.V[X];
+      if (SYS_TYPE == SYS_AMIGA) {
+        chip8.V[0xF] = (chip8.I >> 12) & 1;
+      }
+      chip8.I &= 0x0FFF;
       break;
     }
     break;
