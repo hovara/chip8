@@ -126,10 +126,13 @@ void chip8_cycle() {
       chip8.V[X] = chip8.V[Y];
       break;
     case 0x1: // Binary OR
-      chip8.V[X] = chip8.V[X] ^ chip8.V[Y];
+      chip8.V[X] = chip8.V[X] | chip8.V[Y];
       break;
     case 0x2: // Binary AND
       chip8.V[X] = chip8.V[X] & chip8.V[Y];
+      break;
+    case 0x3: // Logical XOR
+      chip8.V[X] = chip8.V[X] ^ chip8.V[Y];
       break;
     }
     break;
