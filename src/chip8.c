@@ -151,6 +151,14 @@ void chip8_cycle() {
         chip8.V[0xF] = 0;
       chip8.V[X] = chip8.V[X] - chip8.V[Y];
       break;
+    case 0x6:
+      // configurable behaviour
+      if (SYS_TYPE == SYS_COSMAC_VIP) {
+        chip8.V[X] = chip8.V[Y];
+      }
+      chip8.V[0xF] = 1 & chip8.V[X];
+      chip8.V[X] = chip8.V[X] > 1;
+      break;
     case 0x7: // Subtract with borrow
       if (chip8.V[Y] > chip8.V[X])
         chip8.V[0xF] = 1;

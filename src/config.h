@@ -7,4 +7,7 @@
 #define DISPLAY_HEIGHT 32
 #define BLOCK_SIZE ((WINDOW_HEIGHT) / (DISPLAY_HEIGHT))
 
+enum { SYS_COSMAC_VIP, S_CHIP };
+#define SYS_TYPE SYS_COSMAC_VIP
+
 #endif
