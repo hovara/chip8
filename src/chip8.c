@@ -312,6 +312,12 @@ void chip8_cycle() {
         }
       }
       break;
+    case 0x55: // Store Vx
+      for (int i = 0; i <= X; i++) {
+        chip8.V[i] = chip8.memory[chip8.I + i];
+      }
+      chip8.I += X + 1;
+      break;
     }
     break;
   default:
