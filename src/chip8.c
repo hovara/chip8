@@ -179,7 +179,7 @@ void chip8_cycle() {
     if (chip8.V[X] != chip8.V[Y])
       chip8.PC += 2;
     break;
-  case 0xA:
+  case 0xA: // Set index
     chip8.I = NNN;
     break;
   case 0xB:
