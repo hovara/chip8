@@ -297,6 +297,9 @@ void chip8_cycle() {
       }
       break;
     }
+    case 0x29:
+      chip8.I = 0x50 + (chip8.V[X] & 0x0F) * 5;
+      break;
     }
     break;
   default:
