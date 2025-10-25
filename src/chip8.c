@@ -11,6 +11,34 @@
 #include <string.h>
 #include <time.h>
 
+static int get_key_pressed() {
+  int key_pressed = GetKeyPressed();
+  if (IsKeyDown(key_pressed)) {
+    switch (key_pressed) {
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    case 'Q':
+    case 'W':
+    case 'E':
+    case 'R':
+    case 'A':
+    case 'S':
+    case 'D':
+    case 'F':
+    case 'Z':
+    case 'X':
+    case 'C':
+    case 'V':
+      return key_pressed;
+    default:
+      return 0;
+    }
+  }
+  return 0;
+}
+
 Chip8 chip8;
 
 static const unsigned char fonts[80] = {
@@ -225,8 +253,14 @@ void chip8_cycle() {
   case 0xE:
     switch (N) {
     case 0x9:
+      if (chip8.V[X] == get_key_pressed()) {
+        chip8.PC += 2;
+      }
       break;
     case 0xA:
+      if (chip8.V[X] != get_key_pressed()) {
+        chip8.PC += 2;
+      }
       break;
     }
     break;

@@ -19,3 +19,6 @@ run: all
 
 clean:
 	rm -f $(OUT)
+
+test:
+	$(CC) test.c -o test $(CFLAGS) $(LDFLAGS)
