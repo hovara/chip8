@@ -11,10 +11,11 @@
 #include <string.h>
 #include <time.h>
 
-static int get_key_pressed() {
-  int key_pressed = GetKeyPressed();
+static uint8_t get_key_pressed() {
+  uint8_t key_pressed = GetKeyPressed();
   if (IsKeyDown(key_pressed)) {
     switch (key_pressed) {
+    case '0':
     case '1':
     case '2':
     case '3':
@@ -33,7 +34,7 @@ static int get_key_pressed() {
     case 'V':
       return key_pressed;
     default:
-      return 0;
+      return 255;
     }
   }
   return 0;
@@ -284,6 +285,18 @@ void chip8_cycle() {
       }
       chip8.I &= 0x0FFF;
       break;
+    case 0x0A: {
+      uint8_t key_pressed = get_key_pressed();
+      if (key_pressed == 255) {
+        chip8.PC -= 2;
+      } else {
+        if (SYS_TYPE == SYS_COSMAC_VIP)
+          while (!IsKeyReleased(key_pressed)) {
+          }
+        chip8.V[X] = key_pressed;
+      }
+      break;
+    }
     }
     break;
   default:
