@@ -1,4 +1,5 @@
 // test code
+#include <stdint.h>
 #include <unistd.h>
 // test code
 
@@ -134,6 +135,15 @@ void chip8_cycle() {
     case 0x3: // Logical XOR
       chip8.V[X] = chip8.V[X] ^ chip8.V[Y];
       break;
+    case 0x4: { // Add with overflow
+      uint16_t int_buff = chip8.V[X] + chip8.V[Y];
+      if (int_buff > 255)
+        chip8.V[0xF] = 1;
+      else
+        chip8.V[0xF] = 0;
+      chip8.V[X] = (uint8_t)int_buff;
+      break;
+    }
     }
     break;
   case 0x9: // Conditional skip
