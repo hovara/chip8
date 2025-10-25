@@ -312,11 +312,19 @@ void chip8_cycle() {
         }
       }
       break;
-    case 0x55: // Store Vx
+    case 0x55: // Store memory
+      for (int i = 0; i <= X; i++) {
+        chip8.memory[chip8.I + i] = chip8.V[i];
+      }
+      if (SYS_TYPE == SYS_COSMAC_VIP)
+        chip8.I += X + 1;
+      break;
+    case 0x65: // Load memory
       for (int i = 0; i <= X; i++) {
         chip8.V[i] = chip8.memory[chip8.I + i];
       }
-      chip8.I += X + 1;
+      if (SYS_TYPE == SYS_COSMAC_VIP)
+        chip8.I += X + 1;
       break;
     }
     break;
