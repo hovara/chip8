@@ -121,6 +121,11 @@ void chip8_cycle() {
     chip8.V[X] += NN;
     break;
   case 0x8:
+    switch (N) {
+    case 0x0: // Set
+      chip8.V[X] = chip8.V[Y];
+      break;
+    }
     break;
   case 0x9: // Conditional skip
     if (chip8.V[X] != chip8.V[Y])
