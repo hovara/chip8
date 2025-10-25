@@ -265,6 +265,11 @@ void chip8_cycle() {
     }
     break;
   case 0xF:
+    switch (NN) {
+    case 0x07:
+      chip8.V[X] = chip8.delay_timer;
+      break;
+    }
     break;
   default:
     break;
