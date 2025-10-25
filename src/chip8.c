@@ -269,6 +269,9 @@ void chip8_cycle() {
     case 0x07:
       chip8.V[X] = chip8.delay_timer;
       break;
+    case 0x15:
+      chip8.delay_timer = chip8.V[X];
+      break;
     }
     break;
   default:
