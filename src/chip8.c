@@ -114,7 +114,7 @@ void chip8_cycle() {
     if (chip8.V[X] == chip8.V[Y])
       chip8.PC += 2;
     break;
-  case 0x6:
+  case 0x6: // Set
     chip8.V[X] = NN;
     break;
   case 0x7:
