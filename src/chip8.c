@@ -272,6 +272,9 @@ void chip8_cycle() {
     case 0x15:
       chip8.delay_timer = chip8.V[X];
       break;
+    case 0x18:
+      chip8.sound_timer = chip8.V[X];
+      break;
     }
     break;
   default:
