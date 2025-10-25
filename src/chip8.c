@@ -223,6 +223,12 @@ void chip8_cycle() {
     display_draw();
     break;
   case 0xE:
+    switch (N) {
+    case 0x9:
+      break;
+    case 0xA:
+      break;
+    }
     break;
   case 0xF:
     break;
