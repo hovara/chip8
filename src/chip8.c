@@ -201,24 +201,23 @@ void chip8_cycle() {
     break;
   case 0xD: // Display
     chip8.V[0xF] = 0;
-    // wrong here
-    X &= 63;
-    Y &= 31;
+    uint8_t pos_x = chip8.V[X] &= 63;
+    uint8_t pos_y = chip8.V[Y] &= 31;
     for (size_t i = 0; i < N; i++) {
-      if (Y + i > 31) {
+      if (pos_y + i > 31) {
         break;
       }
 
       for (int ib = 7; ib >= 0; ib--) {
-        if (X + ib > 63) {
+        if (pos_x + ib > 63) {
           break;
         }
 
         uint8_t lsb = ((chip8.memory[chip8.I + i] >> ib) & 1);
-        if (display[Y + i][X + (7 - ib)] && lsb) {
+        if (display[pos_y + i][pos_x + (7 - ib)] && lsb) {
           chip8.V[0xF] = 1;
         }
-        display[Y + i][X + (7 - ib)] ^= lsb;
+        display[pos_y + i][pos_x + (7 - ib)] ^= lsb;
       }
     }
     display_draw();
