@@ -125,6 +125,9 @@ void chip8_cycle() {
     case 0x0: // Set
       chip8.V[X] = chip8.V[Y];
       break;
+    case 0x1: // Binary OR
+      chip8.V[X] = chip8.V[X] ^ chip8.V[Y];
+      break;
     }
     break;
   case 0x9: // Conditional skip
