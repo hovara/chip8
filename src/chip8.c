@@ -182,7 +182,16 @@ void chip8_cycle() {
   case 0xA: // Set index
     chip8.I = NNN;
     break;
-  case 0xB:
+  case 0xB: // Jump with offset
+    switch (SYS_TYPE) {
+    default:
+    case SYS_COSMAC_VIP:
+      chip8.PC = NNN + chip8.V[0x0];
+      break;
+    case SYS_S_CHIP:
+      chip8.PC = NNN + chip8.V[X];
+      break;
+    }
     break;
   case 0xC:
     break;
