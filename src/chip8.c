@@ -144,6 +144,20 @@ void chip8_cycle() {
       chip8.V[X] = (uint8_t)int_buff;
       break;
     }
+    case 0x5: // Subtract with borrow
+      if (chip8.V[X] > chip8.V[Y])
+        chip8.V[0xF] = 1;
+      else
+        chip8.V[0xF] = 0;
+      chip8.V[X] = chip8.V[X] - chip8.V[Y];
+      break;
+    case 0x7: // Subtract with borrow
+      if (chip8.V[Y] > chip8.V[X])
+        chip8.V[0xF] = 1;
+      else
+        chip8.V[0xF] = 0;
+      chip8.V[X] = chip8.V[Y] - chip8.V[X];
+      break;
     }
     break;
   case 0x9: // Conditional skip
