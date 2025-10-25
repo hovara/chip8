@@ -7,7 +7,9 @@
 
 #include "chip8.h"
 #include <raylib.h>
+#include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 Chip8 chip8;
 
@@ -54,6 +56,7 @@ void chip8_init() {
 
   // test code
 
+  srand(time(NULL));
   chip8.PC = 0x200;
   chip8_load_fonts();
 }
@@ -193,7 +196,8 @@ void chip8_cycle() {
       break;
     }
     break;
-  case 0xC:
+  case 0xC: // Random
+    chip8.V[X] = rand() & NN;
     break;
   case 0xD: // Display
     chip8.V[0xF] = 0;
