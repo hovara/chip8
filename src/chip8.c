@@ -92,6 +92,19 @@ void chip8_init() {
   chip8_load_fonts();
 }
 
+void chip8_update_timers() {
+  const double TIMERS_UPDATE_RATE = 1.0 / 60.0;
+  const double EPS = 1e-6;
+  static double elapsed_time = 0;
+  elapsed_time += GetFrameTime();
+
+  while (elapsed_time + EPS >= TIMERS_UPDATE_RATE) {
+    chip8.delay_timer -= chip8.delay_timer > 0;
+    chip8.sound_timer -= chip8.sound_timer > 0;
+    elapsed_time -= TIMERS_UPDATE_RATE;
+  }
+}
+
 static inline uint16_t _OP(uint8_t B0, uint8_t B1) {
   return ((uint16_t)(B0) << 8) | (uint16_t)B1;
 }
@@ -156,7 +169,6 @@ void chip8_cycle() {
     chip8.V[X] += NN;
     break;
   case 0x8:
-
     switch (N) {
     case 0x0: // Set
       chip8.V[X] = chip8.V[Y];
@@ -238,12 +250,10 @@ void chip8_cycle() {
       if (pos_y + i > 31) {
         break;
       }
-
       for (int ib = 7; ib >= 0; ib--) {
         if (pos_x + ib > 63) {
           break;
         }
-
         uint8_t lsb = ((chip8.memory[chip8.I + i] >> ib) & 1);
         if (display[pos_y + i][pos_x + (7 - ib)] && lsb) {
           chip8.V[0xF] = 1;
@@ -331,7 +341,4 @@ void chip8_cycle() {
   default:
     break;
   }
-
-  // execute
-  // wait:
 }

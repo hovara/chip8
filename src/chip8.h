@@ -19,6 +19,7 @@ extern Chip8 chip8;
 
 void chip8_load_fonts();
 void chip8_init();
+void chip8_update_timers();
 void chip8_cycle();
 
 #endif

@@ -14,6 +14,7 @@ int main() {
   SetTargetFPS(60);
 
   while (!WindowShouldClose()) {
+    chip8_update_timers();
     BeginDrawing();
     chip8_cycle();
     EndDrawing();
