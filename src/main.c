@@ -16,7 +16,8 @@ int main() {
   while (!WindowShouldClose()) {
     chip8_update_timers();
     BeginDrawing();
-    chip8_cycle();
+    for (int i = chip8_schedule_cycles(); i > 0; i--)
+      chip8_cycle();
     EndDrawing();
   }
   return 0;

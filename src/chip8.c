@@ -93,15 +93,15 @@ void chip8_init() {
 }
 
 void chip8_update_timers() {
-  const double TIMERS_UPDATE_RATE = 1.0 / 60.0;
+  const double TIMERS_UPDATE_TIME = 1.0 / 60.0;
   const double EPS = 1e-6;
   static double elapsed_time = 0;
   elapsed_time += GetFrameTime();
 
-  while (elapsed_time + EPS >= TIMERS_UPDATE_RATE) {
+  while (elapsed_time + EPS >= TIMERS_UPDATE_TIME) {
     chip8.delay_timer -= chip8.delay_timer > 0;
     chip8.sound_timer -= chip8.sound_timer > 0;
-    elapsed_time -= TIMERS_UPDATE_RATE;
+    elapsed_time -= TIMERS_UPDATE_TIME;
   }
 }
 
@@ -114,6 +114,19 @@ static inline uint8_t _Y(uint16_t OP) { return (uint8_t)(OP >> 4) & 0x0F; }
 static inline uint8_t _N(uint16_t OP) { return (uint8_t)OP & 0x0F; }
 static inline uint8_t _NN(uint16_t OP) { return (uint8_t)OP; }
 static inline uint16_t _NNN(uint16_t OP) { return OP & 0x0FFF; }
+
+int chip8_schedule_cycles() {
+  const double CYCLE_TIME = 1.0 / CHIP8_NO_CYCLES;
+  const double EPS = 1e-6;
+  static double elapsed_time = 0;
+
+  elapsed_time += GetFrameTime();
+
+  // how many cycles to run
+  int n = (int)((elapsed_time + EPS) / CYCLE_TIME);
+  elapsed_time -= n * CYCLE_TIME;
+  return n;
+}
 
 void chip8_cycle() {
   // fetch

@@ -10,4 +10,6 @@
 enum { SYS_COSMAC_VIP, SYS_S_CHIP, SYS_AMIGA };
 #define SYS_TYPE SYS_COSMAC_VIP
 
+#define CHIP8_NO_CYCLES 700.0;
+
 #endif
