@@ -122,18 +122,21 @@ int chip8_schedule_cycles() {
 
   elapsed_time += GetFrameTime();
 
-  // how many cycles to run
   int n = (int)((elapsed_time + EPS) / CYCLE_TIME);
   elapsed_time -= n * CYCLE_TIME;
   return n;
 }
 
 void chip8_cycle() {
-  // fetch
+  ///////////
+  // fetch //
+  ///////////
   uint16_t OP = _OP(chip8.memory[chip8.PC], chip8.memory[chip8.PC + 1]);
   chip8.PC += 2;
 
-  // decode
+  ////////////
+  // decode //
+  ////////////
   uint8_t instr = _instr(OP);
   uint8_t X = _X(OP);
   uint8_t Y = _Y(OP);
@@ -141,7 +144,9 @@ void chip8_cycle() {
   uint8_t NN = _NN(OP);
   uint16_t NNN = _NNN(OP);
 
-  // execute
+  /////////////
+  // execute //
+  /////////////
   switch (instr) {
   case 0x0:
     if (X == 0x0) {
@@ -195,7 +200,7 @@ void chip8_cycle() {
     case 0x3: // Logical XOR
       chip8.V[X] = chip8.V[X] ^ chip8.V[Y];
       break;
-    case 0x4: { // Add with overflow
+    case 0x4: /* Add with overflow */ {
       uint16_t int_buff = chip8.V[X] + chip8.V[Y];
       if (int_buff > 255)
         chip8.V[0xF] = 1;
@@ -278,12 +283,12 @@ void chip8_cycle() {
     break;
   case 0xE:
     switch (NN) {
-    case 0x9E:
+    case 0x9E: // Skip if key pressed
       if (chip8.V[X] == get_key_pressed()) {
         chip8.PC += 2;
       }
       break;
-    case 0xA1:
+    case 0xA1: // Skip if key not pressed
       if (chip8.V[X] != get_key_pressed()) {
         chip8.PC += 2;
       }
@@ -292,23 +297,23 @@ void chip8_cycle() {
     break;
   case 0xF:
     switch (NN) {
-    case 0x07:
+    case 0x07: // Set Vx to value of delay timer
       chip8.V[X] = chip8.delay_timer;
       break;
-    case 0x15:
+    case 0x15: // Set delay timer to Vx
       chip8.delay_timer = chip8.V[X];
       break;
-    case 0x18:
+    case 0x18: // Set sound timer to Vx
       chip8.sound_timer = chip8.V[X];
       break;
-    case 0x1E:
+    case 0x1E: // Add to index
       chip8.I += chip8.V[X];
       if (SYS_TYPE == SYS_AMIGA) {
         chip8.V[0xF] = (chip8.I >> 12) & 1;
       }
       chip8.I &= 0x0FFF;
       break;
-    case 0x0A: {
+    case 0x0A: /* Get key */ {
       uint8_t key_pressed = get_key_pressed();
       if (key_pressed == 255) {
         chip8.PC -= 2;
@@ -320,10 +325,10 @@ void chip8_cycle() {
       }
       break;
     }
-    case 0x29:
+    case 0x29: // Set index register to Font character address
       chip8.I = 0x50 + (chip8.V[X] & 0x0F) * 5;
       break;
-    case 0x33:
+    case 0x33: // Binary-coded decimal conversion
       if (chip8.V[X] == 0)
         chip8.memory[chip8.I] = 0;
       else {
