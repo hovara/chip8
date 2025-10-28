@@ -2,39 +2,92 @@
 
 #include "chip8.h"
 #include <raylib.h>
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 
-static uint8_t get_key_pressed() {
-  uint8_t key_pressed = GetKeyPressed();
-  if (IsKeyDown(key_pressed)) {
-    switch (key_pressed) {
-    case '0':
-    case '1':
-    case '2':
-    case '3':
-    case '4':
-    case 'Q':
-    case 'W':
-    case 'E':
-    case 'R':
-    case 'A':
-    case 'S':
-    case 'D':
-    case 'F':
-    case 'Z':
-    case 'X':
-    case 'C':
-    case 'V':
-      return key_pressed;
-    default:
-      return 255;
-    }
+static bool is_chip8_key_down(uint8_t key) {
+  switch (key & 0xF) {
+  case 0x1:
+    return IsKeyDown('1');
+  case 0x2:
+    return IsKeyDown('2');
+  case 0x3:
+    return IsKeyDown('3');
+  case 0xC:
+    return IsKeyDown('4');
+  case 0x4:
+    return IsKeyDown('Q');
+  case 0x5:
+    return IsKeyDown('W');
+  case 0x6:
+    return IsKeyDown('E');
+  case 0xD:
+    return IsKeyDown('R');
+  case 0x7:
+    return IsKeyDown('A');
+  case 0x8:
+    return IsKeyDown('S');
+  case 0x9:
+    return IsKeyDown('D');
+  case 0xE:
+    return IsKeyDown('F');
+  case 0xA:
+    return IsKeyDown('Z');
+  case 0x0:
+    return IsKeyDown('X');
+  case 0xB:
+    return IsKeyDown('C');
+  case 0xF:
+    return IsKeyDown('V');
+  default:
+    return false;
   }
-  return 0;
+}
+
+static uint8_t get_key_pressed(void) {
+  // COSMAC VIP keypad
+  // 1 2 3 C
+  // 4 5 6 D
+  // 7 8 9 E
+  // A 0 B F
+  if (IsKeyDown('1'))
+    return 0x1;
+  if (IsKeyDown('2'))
+    return 0x2;
+  if (IsKeyDown('3'))
+    return 0x3;
+  if (IsKeyDown('4'))
+    return 0xC;
+  if (IsKeyDown('Q'))
+    return 0x4;
+  if (IsKeyDown('W'))
+    return 0x5;
+  if (IsKeyDown('E'))
+    return 0x6;
+  if (IsKeyDown('R'))
+    return 0xD;
+  if (IsKeyDown('A'))
+    return 0x7;
+  if (IsKeyDown('S'))
+    return 0x8;
+  if (IsKeyDown('D'))
+    return 0x9;
+  if (IsKeyDown('F'))
+    return 0xE;
+  if (IsKeyDown('Z'))
+    return 0xA;
+  if (IsKeyDown('X'))
+    return 0x0;
+  if (IsKeyDown('C'))
+    return 0xB;
+  if (IsKeyDown('V'))
+    return 0xF;
+
+  return 0xFF; // none pressed
 }
 
 Chip8 chip8;
@@ -60,6 +113,11 @@ static const unsigned char fonts[80] = {
 void chip8_load_fonts() { memcpy(&chip8.memory[0x50], fonts, sizeof(fonts)); }
 
 static uint8_t display[DISPLAY_HEIGHT][DISPLAY_WIDTH];
+static void clear_display() {
+  for (int y = 0; y < DISPLAY_HEIGHT; y++)
+    for (int x = 0; x < DISPLAY_WIDTH; x++)
+      display[y][x] = 0;
+}
 static void display_draw(void) {
   for (int y = 0; y < DISPLAY_HEIGHT; y++) {
     for (int x = 0; x < DISPLAY_WIDTH; x++) {
@@ -175,6 +233,7 @@ void chip8_cycle() {
       switch (NN) {
       case 0xE0: // Clear screen
         ClearBackground(BLACK);
+        clear_display();
         break;
 
       case 0xEE: // Return from a subroutine
@@ -306,12 +365,12 @@ void chip8_cycle() {
   case 0xE:
     switch (NN) {
     case 0x9E: // Skip if key pressed
-      if (chip8.V[X] == get_key_pressed()) {
+      if (is_chip8_key_down(chip8.V[X])) {
         chip8.PC += 2;
       }
       break;
     case 0xA1: // Skip if key not pressed
-      if (chip8.V[X] != get_key_pressed()) {
+      if (!is_chip8_key_down(chip8.V[X])) {
         chip8.PC += 2;
       }
       break;
@@ -337,7 +396,7 @@ void chip8_cycle() {
       break;
     case 0x0A: /* Get key */ {
       uint8_t key_pressed = get_key_pressed();
-      if (key_pressed == 255) {
+      if (key_pressed == 0xFF) {
         chip8.PC -= 2;
       } else {
         if (SYS_TYPE == SYS_COSMAC_VIP)
