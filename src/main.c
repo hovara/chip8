@@ -3,10 +3,20 @@
 #include "raylib.h"
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
 
 #include "chip8.h"
 
-int main() {
+int main(int argc, char **argv) {
+  if (argc < 2) {
+    printf("Too little arguments!\n");
+    printf("Hint: ./chip8 'filepath'\n");
+  } else if (argc > 2) {
+    printf("Too many arguments!\n");
+    printf("Only one 'filepath' is supported.\n");
+  } else
+    (chip8_load_rom(argv[1]));
+
   chip8_init();
 
   SetTraceLogLevel(LOG_WARNING);

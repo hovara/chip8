@@ -1,12 +1,9 @@
-// test code
-#include <stdint.h>
-#include <unistd.h>
-// test code
-
 #include "config.h"
 
 #include "chip8.h"
 #include <raylib.h>
+#include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
@@ -76,16 +73,41 @@ static void display_draw(void) {
   }
 }
 
+void chip8_load_rom(const char *file_path) {
+  FILE *f = fopen(file_path, "rb");
+  if (!f) {
+    printf("fopen() error: Failed to open file\n");
+    return;
+  }
+  if (fseek(f, 0, SEEK_END) != 0) {
+    printf("fseek() error: Failed to move position indicator\n");
+    fclose(f);
+    return;
+  }
+  long fsize = ftell(f);
+  if (fsize < 0) {
+    printf("ftell() error: Failed to read value of position indicator\n");
+    fclose(f);
+    return;
+  }
+  rewind(f);
+  if (fsize > (MEM_SIZE - 0x200)) {
+    printf("ROM too large! MEM_SIZE= %d [bytes], ROM_SIZE=%ld [bytes]\n",
+           MEM_SIZE, fsize);
+    fclose(f);
+    return;
+  }
+  size_t read = fread(&chip8.memory[0x200], 1, fsize, f);
+  fclose(f);
+  if (read != fsize) {
+    printf("fread() error: Read %zu instead of %ld from %s\n", read, fsize,
+           file_path);
+    return;
+  }
+  printf("ROM loaded successfully.\n");
+}
+
 void chip8_init() {
-  // test code
-
-  chip8.I = 0x50;
-  chip8.memory[0x200] = 0xD0;
-  chip8.memory[0x201] = 0x15;
-  chip8.V[0] = 10;
-  chip8.V[1] = 10;
-
-  // test code
 
   srand(time(NULL));
   chip8.PC = 0x200;

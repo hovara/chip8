@@ -1,4 +1,4 @@
 # TODO list
 
 - [ ] Add sounds
-- [ ] Add ROM loading
+- [x] Add ROM loading

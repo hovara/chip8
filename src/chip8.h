@@ -18,6 +18,7 @@ typedef struct Chip8 {
 extern Chip8 chip8;
 
 void chip8_load_fonts();
+void chip8_load_rom(const char *file_path);
 void chip8_init();
 void chip8_update_timers();
 int chip8_schedule_cycles();

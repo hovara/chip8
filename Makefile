@@ -11,11 +11,13 @@ LDFLAGS = -L$(LIB_DIR) -lraylib -lm -lpthread -ldl -lrt -lGL -lX11
 SRC = ./src/*.c
 OUT = chip8
 
+ROM ?= IBM.ch8
+
 all:
 	$(CC) $(SRC) -o $(OUT) $(CFLAGS) $(LDFLAGS)
 
 run: all
-	./$(OUT)
+	./$(OUT) ./roms/$(ROM)
 
 clean:
 	rm -f $(OUT)
